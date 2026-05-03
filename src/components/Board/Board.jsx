@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthProvider";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import KanbanBoard from "./KanbanBoard";
-import MyTasks from "./MyTasks";
+import MyTasks from "./Mytasks";
 
 const Dashboard = () => {
   const { user } = useAuth();
