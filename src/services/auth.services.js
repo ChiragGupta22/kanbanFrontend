@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://kanbanbackend-2-x4y5.onrender.com",
+  baseURL: "https://kanbanbackend-2-x4y5.onrender.com/api",
   withCredentials: true,
 });
 
