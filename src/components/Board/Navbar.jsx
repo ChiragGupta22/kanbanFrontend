@@ -8,7 +8,7 @@ import { uploadAvatar, getAvatar } from "../../services/avatar";
 const Navbar = () => {
   const { user, setUser } = useAuth();
   const { projectId } = useParams();
-
+  console.log(projectId);
   const [project, setProject] = useState(null);
   const [avatar, setAvatar] = useState("");
   const [open, setOpen] = useState(false);
@@ -61,7 +61,7 @@ const Navbar = () => {
     <div className="h-20 w-full bg-slate-900 flex items-center justify-between px-6 text-white">
       {/* PROJECT */}
       {/* <h2 className="text-lg font-semibold">
-        {project?.name || "No Project Selected"}
+        {project?.name || "no project Selected"}
       </h2> */}
 
       {/* SEARCH */}
