@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DragDropProvider } from "@dnd-kit/react";
 import { useParams } from "react-router-dom";
-import { connectWS } from "../../services/ws";
 import { useRef } from "react";
 
 import {
@@ -24,7 +23,6 @@ function Board() {
   const [inputs, setInputs] = useState({});
 
   const STATUSES = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE"];
-  const socketRef = useRef(null);
 
   const fetchIssues = async () => {
     try {
@@ -51,27 +49,6 @@ function Board() {
     }
   }, [projectId]);
 
-  useEffect(() => {
-    if (!projectId) return;
-
-    const socket = connectWS();
-    socketRef.current = socket;
-
-    socket.on("connect", () => {
-      console.log("Connected:", socket.id);
-      socket.emit("joinRoom", { projectId });
-    });
-
-    socket.on("disconnect", (reason) => {
-      console.log("Disconnected:", reason);
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.disconnect();
-    };
-  }, [projectId]);
   const handleInput = (status, value) => {
     setInputs((prev) => ({ ...prev, [status]: value }));
   };
