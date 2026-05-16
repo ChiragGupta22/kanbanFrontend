@@ -118,7 +118,6 @@ const AdminDashboard = () => {
 
             <Route path="teams/:teamId/members" element={<Teammember />} />
 
-            {/* ✅ ADD THIS */}
             <Route path="teams/:teamId/projects" element={<Projects />} />
 
             <Route path="projects/:projectId/board" element={<Board />} />

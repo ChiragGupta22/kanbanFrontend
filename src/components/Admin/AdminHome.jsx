@@ -1,38 +1,59 @@
-import { Users, Layers } from "lucide-react";
+import { useState } from "react";
 
-const AdminHome = ({ teams = [], members = [] }) => {
+const AdminHome = ({ teams, members }) => {
+  const [showMembers, setShowMembers] = useState(false);
+
   return (
-    <div className="text-white space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-wide">Welcome Admin </h1>
-        <p className="text-gray-400 mt-1">
-          Manage your teams and members easily
-        </p>
-      </div>
-
-      {/* STATS CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* TEAMS */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-5 rounded-2xl shadow-lg hover:scale-105 transition">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-sm text-blue-200">Total Teams</h2>
-              <p className="text-3xl font-bold mt-1">{teams.length}</p>
-            </div>
-            <Users size={30} className="text-white opacity-80" />
-          </div>
+    <div className="text-white">
+      {/* STATS */}
+      <div className="grid grid-cols-2 gap-5 mb-8">
+        <div className="bg-gray-800 p-5 rounded-xl">
+          <h2 className="text-lg font-semibold">Total Teams</h2>
+          <p className="text-3xl mt-2">{teams.length}</p>
         </div>
 
-        <div className="bg-gradient-to-r from-green-600 to-green-800 p-5 rounded-2xl shadow-lg hover:scale-105 transition">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-sm text-green-200">Total Members</h2>
-              <p className="text-3xl font-bold mt-1">{members.length}</p>
-            </div>
-            <Layers size={30} className="text-white opacity-80" />
-          </div>
+        {/* CLICKABLE MEMBERS CARD */}
+        <div
+          onClick={() => setShowMembers(!showMembers)}
+          className="bg-gray-800 p-5 rounded-xl cursor-pointer hover:bg-gray-700"
+        >
+          <h2 className="text-lg font-semibold">Total Members</h2>
+          <p className="text-3xl mt-2">{members.length}</p>
+          <p className="text-xs text-gray-400 mt-1">Click to view</p>
         </div>
       </div>
+
+      {/* CONDITIONAL MEMBERS LIST */}
+      {showMembers && (
+        <div className="bg-gray-800 p-5 rounded-xl">
+          <div className="flex justify-between mb-4">
+            <h2 className="text-2xl font-bold">All Members</h2>
+
+            <button
+              onClick={() => setShowMembers(false)}
+              className="text-red-400"
+            >
+              Close
+            </button>
+          </div>
+
+          {members.length === 0 ? (
+            <p className="text-gray-400">No members found</p>
+          ) : (
+            <div className="space-y-3">
+              {members.map((member) => (
+                <div
+                  key={member.id}
+                  className="border border-gray-700 p-3 rounded"
+                >
+                  <p className="font-semibold">{member.user?.name}</p>
+                  <p className="text-sm text-gray-400">{member.user?.email}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
