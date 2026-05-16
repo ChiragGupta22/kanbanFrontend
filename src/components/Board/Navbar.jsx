@@ -4,7 +4,6 @@ import { Bell, Search } from "lucide-react";
 import API from "../../services/auth.services";
 import { useAuth } from "../../context/AuthProvider";
 import { uploadAvatar, getAvatar } from "../../services/avatar";
-import NavbarSearch from "./NavbarSearch";
 
 const Navbar = () => {
   const { user, setUser } = useAuth();
@@ -66,7 +65,13 @@ const Navbar = () => {
       </h2> */}
 
       {/* SEARCH */}
-      <NavbarSearch />
+      <div className="w-[40%] relative">
+        <Search className="absolute left-3 top-2 text-gray-400" />
+        <input
+          className="w-full pl-10 p-2 bg-slate-700 rounded outline-none"
+          placeholder="Search..."
+        />
+      </div>
 
       {/* USER */}
       <div className="relative flex items-center gap-4">
