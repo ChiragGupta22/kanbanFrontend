@@ -46,7 +46,11 @@ const UserProjects = () => {
           {projects.map((p) => (
             <div
               key={p.id}
-              onClick={() => navigate(`/dashboard/${teamId}/${p.id}`)}
+              onClick={() => {
+                sessionStorage.setItem("projectId", p.id);
+
+                navigate(`/dashboard/${teamId}/${p.id}`);
+              }}
               className="bg-gray-800 p-5 rounded-xl cursor-pointer hover:bg-gray-700"
             >
               <h3 className="font-bold">{p.name}</h3>
