@@ -1,28 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { DragDropProvider } from "@dnd-kit/react";
-import { getIssues, updateIssue } from "../../services/issue.services";
+
+import {
+  getIssues,
+  updateIssue,
+  createIssue,
+} from "../../services/issue.services";
+
 import { Draggable } from "./Dragable";
 import { Droppable } from "./Dropable";
+import { useAuth } from "../../context/AuthProvider";
 
 const STATUSES = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE"];
 
 const KanbanBoard = ({ projectId }) => {
+  const { user } = useAuth();
+
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [inputs, setInputs] = useState({});
 
+  // ================= FETCH ISSUES =================
   useEffect(() => {
     const fetch = async () => {
       try {
         setLoading(true);
 
-        const res = await getIssues();
-        const allIssues = res || [];
-
-        const filtered = projectId
-          ? allIssues.filter((i) => i.projectId === projectId)
-          : [];
-
-        setIssues(filtered);
+        const data = await getIssues(projectId);
+        setIssues(data || []);
       } catch (err) {
         console.log(err);
       } finally {
@@ -30,16 +35,47 @@ const KanbanBoard = ({ projectId }) => {
       }
     };
 
-    fetch();
+    if (projectId) fetch();
   }, [projectId]);
 
+  // ================= INPUT =================
+  const handleInput = (status, value) => {
+    setInputs((prev) => ({
+      ...prev,
+      [status]: value,
+    }));
+  };
+
+  // ================= CREATE TASK =================
+  const handleAdd = async (status) => {
+    const title = inputs[status];
+    if (!title) return;
+
+    try {
+      const newTask = await createIssue({
+        title,
+        status,
+        projectId,
+        priority: "MEDIUM",
+        assigneeId: user?.id, // 🔥 logged-in user
+      });
+
+      setIssues((prev) => [...prev, newTask]);
+
+      setInputs((prev) => ({ ...prev, [status]: "" }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // ================= DRAG & DROP =================
   const handleDragEnd = async (event) => {
     const draggedId = event.operation.source?.id;
     const newStatus = event.operation.target?.id;
 
     if (!draggedId || !newStatus) return;
 
-    // UI update instantly
+    // UI update
     setIssues((prev) =>
       prev.map((i) => (i.id === draggedId ? { ...i, status: newStatus } : i)),
     );
@@ -52,21 +88,41 @@ const KanbanBoard = ({ projectId }) => {
     }
   };
 
+  // ================= UI STATES =================
   if (loading) return <div className="text-white p-6">Loading...</div>;
-
   if (!projectId) return <div className="text-white p-6">Select a project</div>;
 
+  // ================= UI =================
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
       <div className="flex gap-6 p-6 bg-gray-900 min-h-screen overflow-x-auto">
         {STATUSES.map((status) => (
           <Droppable key={status} id={status}>
             <div className="w-[300px] bg-gray-800 rounded-xl flex flex-col">
+              {/* HEADER */}
               <div className="p-3 text-white font-bold border-b border-gray-700">
                 {status.replaceAll("_", " ")}
               </div>
 
-              {/* CARDS */}
+              {/* CREATE TASK */}
+              <div className="p-2">
+                <input
+                  value={inputs[status] || ""}
+                  onChange={(e) => handleInput(status, e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAdd(status)}
+                  placeholder="Create task..."
+                  className="w-full p-2 bg-gray-700 text-white rounded text-sm"
+                />
+
+                <button
+                  onClick={() => handleAdd(status)}
+                  className="mt-2 w-full bg-blue-600 text-white text-sm py-1 rounded"
+                >
+                  Add Task
+                </button>
+              </div>
+
+              {/* TASK CARDS */}
               <div className="p-2 space-y-3 flex-1">
                 {issues
                   .filter((i) => i.status === status)
