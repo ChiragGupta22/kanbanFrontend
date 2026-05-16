@@ -20,14 +20,23 @@ const KanbanBoard = ({ projectId }) => {
   const [loading, setLoading] = useState(true);
   const [inputs, setInputs] = useState({});
 
-  // ================= FETCH ISSUES =================
+  // fetch
   useEffect(() => {
     const fetch = async () => {
       try {
         setLoading(true);
 
         const data = await getIssues(projectId);
-        setIssues(data || []);
+
+        const normalized = (data || []).map((issue) => ({
+          ...issue,
+          assignee: issue.assignee || {
+            id: user?.id,
+            name: user?.name,
+          },
+        }));
+
+        setIssues(normalized);
       } catch (err) {
         console.log(err);
       } finally {
@@ -35,10 +44,10 @@ const KanbanBoard = ({ projectId }) => {
       }
     };
 
-    if (projectId) fetch();
-  }, [projectId]);
+    if (projectId && user) fetch();
+  }, [projectId, user]);
 
-  // ================= INPUT =================
+  // input
   const handleInput = (status, value) => {
     setInputs((prev) => ({
       ...prev,
@@ -46,7 +55,7 @@ const KanbanBoard = ({ projectId }) => {
     }));
   };
 
-  // ================= CREATE TASK =================
+  // create
   const handleAdd = async (status) => {
     const title = inputs[status];
     if (!title) return;
@@ -57,10 +66,18 @@ const KanbanBoard = ({ projectId }) => {
         status,
         projectId,
         priority: "MEDIUM",
-        assigneeId: user?.id, // 🔥 logged-in user
+        assigneeId: user?.id,
       });
 
-      setIssues((prev) => [...prev, newTask]);
+      const taskWithUser = {
+        ...newTask,
+        assignee: {
+          id: user?.id,
+          name: user?.name,
+        },
+      };
+
+      setIssues((prev) => [...prev, taskWithUser]);
 
       setInputs((prev) => ({ ...prev, [status]: "" }));
     } catch (err) {
@@ -68,19 +85,16 @@ const KanbanBoard = ({ projectId }) => {
     }
   };
 
-  // ================= DRAG & DROP =================
   const handleDragEnd = async (event) => {
     const draggedId = event.operation.source?.id;
     const newStatus = event.operation.target?.id;
 
     if (!draggedId || !newStatus) return;
 
-    // UI update
     setIssues((prev) =>
       prev.map((i) => (i.id === draggedId ? { ...i, status: newStatus } : i)),
     );
 
-    // DB update
     try {
       await updateIssue(draggedId, { status: newStatus });
     } catch (err) {
@@ -88,11 +102,9 @@ const KanbanBoard = ({ projectId }) => {
     }
   };
 
-  // ================= UI STATES =================
   if (loading) return <div className="text-white p-6">Loading...</div>;
   if (!projectId) return <div className="text-white p-6">Select a project</div>;
 
-  // ================= UI =================
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
       <div className="flex gap-6 p-6 bg-gray-900 min-h-screen overflow-x-auto">
@@ -122,7 +134,7 @@ const KanbanBoard = ({ projectId }) => {
                 </button>
               </div>
 
-              {/* TASK CARDS */}
+              {/* CARDS */}
               <div className="p-2 space-y-3 flex-1">
                 {issues
                   .filter((i) => i.status === status)
@@ -135,22 +147,17 @@ const KanbanBoard = ({ projectId }) => {
                           {i.project?.name}
                         </p>
 
+                        {/* FIXED USER DISPLAY */}
                         <div className="mt-3 flex items-center gap-2">
-                          {i.assignee ? (
-                            <>
-                              <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px] font-bold">
-                                {i.assignee.name?.charAt(0).toUpperCase()}
-                              </div>
+                          <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px] font-bold">
+                            {(i.assignee?.name || user?.name)
+                              ?.charAt(0)
+                              .toUpperCase()}
+                          </div>
 
-                              <span className="text-green-400 text-xs">
-                                {i.assignee.name}
-                              </span>
-                            </>
-                          ) : (
-                            <span className="text-gray-400 text-xs">
-                              Unassigned
-                            </span>
-                          )}
+                          <span className="text-green-400 text-xs">
+                            {i.assignee?.name || user?.name}
+                          </span>
                         </div>
                       </div>
                     </Draggable>
