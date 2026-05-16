@@ -66,13 +66,7 @@ const Navbar = () => {
       </h2> */}
 
       {/* SEARCH */}
-      <div className="w-[40%] relative">
-        <Search className="absolute left-3 top-2 text-gray-400" />
-        <input
-          className="w-full pl-10 p-2 bg-slate-700 rounded outline-none"
-          placeholder="Search..."
-        />
-      </div>
+      <NavbarSearch />
 
       {/* USER */}
       <div className="relative flex items-center gap-4">
