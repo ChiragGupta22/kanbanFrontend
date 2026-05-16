@@ -11,7 +11,8 @@ const KanbanBoard = ({ projectId }) => {
   const params = useParams();
 
   // ✅ refresh ke baad URL se projectId aa jayega
-  const finalProjectId = projectId || params.projectId;
+  const finalProjectId =
+    projectId || params.projectId || sessionStorage.getItem("projectId");
 
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
