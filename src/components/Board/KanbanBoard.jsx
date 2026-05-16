@@ -102,7 +102,6 @@ const KanbanBoard = ({ projectId }) => {
     }
   };
 
-  if (loading) return <div className="text-white p-6">Loading...</div>;
   if (!projectId) return <div className="text-white p-6">Select a project</div>;
 
   return (

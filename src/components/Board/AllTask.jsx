@@ -16,7 +16,7 @@ const AllTasks = ({ projectId }) => {
   }, [projectId]);
 
   if (!projectId) {
-    return <div className="text-white p-6">❌ No Project Selected</div>;
+    return <div className="text-white p-6">No Project Selected</div>;
   }
 
   return (
