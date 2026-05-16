@@ -4,6 +4,7 @@ import { Bell, Search } from "lucide-react";
 import API from "../../services/auth.services";
 import { useAuth } from "../../context/AuthProvider";
 import { uploadAvatar, getAvatar } from "../../services/avatar";
+import NavbarSearch from "./NavbarSearch";
 
 const Navbar = () => {
   const { user, setUser } = useAuth();
