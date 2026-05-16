@@ -46,11 +46,7 @@ const UserTeams = () => {
           {teams.map((team) => (
             <div
               key={team.id}
-              onClick={() => {
-                sessionStorage.setItem("teamId", team.id);
-
-                navigate(`/teams/${team.id}/projects`);
-              }}
+              onClick={() => navigate(`/teams/${team.id}/projects`)}
               className="bg-gray-800 p-5 rounded-xl cursor-pointer hover:bg-gray-700"
             >
               <h3 className="text-lg font-semibold">{team.name}</h3>
