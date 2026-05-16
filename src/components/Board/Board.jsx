@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthProvider";
-
+import { useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import KanbanBoard from "./KanbanBoard";
 import MyTasks from "./Mytasks";
 
 const Dashboard = () => {
+  const params = useParams();
   const { user } = useAuth();
 
   const [view, setView] = useState("BOARD");
 
   // 🔥 ADD TEAM ALSO
-  const [teamId, setTeamId] = useState(null);
-  const [projectId, setProjectId] = useState(null);
+  const [teamId, setTeamId] = useState(params.teamId || null);
+  const [projectId, setProjectId] = useState(params.projectId || null);
 
   if (!user) return <div className="text-white">Loading...</div>;
 
