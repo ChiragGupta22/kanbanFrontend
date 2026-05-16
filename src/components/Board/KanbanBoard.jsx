@@ -3,17 +3,10 @@ import { DragDropProvider } from "@dnd-kit/react";
 import { getIssues, updateIssue } from "../../services/issue.services";
 import { Draggable } from "./Dragable";
 import { Droppable } from "./Dropable";
-import { useParams } from "react-router-dom";
 
 const STATUSES = ["BACKLOG", "TODO", "IN_PROGRESS", "DONE"];
 
 const KanbanBoard = ({ projectId }) => {
-  const params = useParams();
-
-  // ✅ refresh ke baad URL se projectId aa jayega
-  const finalProjectId =
-    projectId || params.projectId || sessionStorage.getItem("projectId");
-
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,8 +18,8 @@ const KanbanBoard = ({ projectId }) => {
         const res = await getIssues();
         const allIssues = res || [];
 
-        const filtered = finalProjectId
-          ? allIssues.filter((i) => i.projectId === finalProjectId)
+        const filtered = projectId
+          ? allIssues.filter((i) => i.projectId === projectId)
           : [];
 
         setIssues(filtered);
@@ -38,7 +31,7 @@ const KanbanBoard = ({ projectId }) => {
     };
 
     fetch();
-  }, [finalProjectId]);
+  }, [projectId]);
 
   const handleDragEnd = async (event) => {
     const draggedId = event.operation.source?.id;
@@ -59,13 +52,9 @@ const KanbanBoard = ({ projectId }) => {
     }
   };
 
-  if (loading) {
-    return <div className="text-white p-6">Loading...</div>;
-  }
+  if (loading) return <div className="text-white p-6">Loading...</div>;
 
-  if (!finalProjectId) {
-    return <div className="text-white p-6">Select a project</div>;
-  }
+  if (!projectId) return <div className="text-white p-6">Select a project</div>;
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
@@ -73,7 +62,6 @@ const KanbanBoard = ({ projectId }) => {
         {STATUSES.map((status) => (
           <Droppable key={status} id={status}>
             <div className="w-[300px] bg-gray-800 rounded-xl flex flex-col">
-              {/* COLUMN HEADER */}
               <div className="p-3 text-white font-bold border-b border-gray-700">
                 {status.replaceAll("_", " ")}
               </div>
@@ -85,15 +73,12 @@ const KanbanBoard = ({ projectId }) => {
                   .map((i) => (
                     <Draggable key={i.id} id={i.id}>
                       <div className="bg-gray-700 p-3 rounded-lg text-white cursor-move hover:bg-gray-600 transition">
-                        {/* TITLE */}
                         <p className="font-semibold text-sm">{i.title}</p>
 
-                        {/* PROJECT */}
                         <p className="text-xs text-gray-300 mt-1">
                           {i.project?.name}
                         </p>
 
-                        {/* ASSIGNEE */}
                         <div className="mt-3 flex items-center gap-2">
                           {i.assignee ? (
                             <>
