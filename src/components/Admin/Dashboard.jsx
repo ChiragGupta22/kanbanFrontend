@@ -12,6 +12,7 @@ import Teammember from "./Teammember";
 import Projects from "./Projects";
 import Board from "./Board";
 import AdminHome from "./AdminHome";
+import AllTeamMembers from "./AllTeamMembers";
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
@@ -110,7 +111,10 @@ const AdminDashboard = () => {
               path="/"
               element={<AdminHome teams={teams} members={members} />}
             />
-
+            <Route
+              path="teams/:teamId/all-members"
+              element={<AllTeamMembers />}
+            />
             <Route
               path="teams"
               element={<Teams teams={teams} setTeams={setTeams} />}
