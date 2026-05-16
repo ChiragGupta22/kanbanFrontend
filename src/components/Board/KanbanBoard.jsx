@@ -102,7 +102,12 @@ const KanbanBoard = ({ projectId }) => {
     }
   };
 
-  if (!projectId) return <div className="text-white p-6">Select a project</div>;
+  if (!projectId)
+    return (
+      <div className="text-white p-6">
+        Select Team and Project in which u want to go
+      </div>
+    );
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
