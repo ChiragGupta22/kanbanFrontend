@@ -60,9 +60,9 @@ const Navbar = () => {
   return (
     <div className="h-20 w-full bg-slate-900 flex items-center justify-between px-6 text-white">
       {/* PROJECT */}
-      <h2 className="text-lg font-semibold">
+      {/* <h2 className="text-lg font-semibold">
         {project?.name || "No Project Selected"}
-      </h2>
+      </h2> */}
 
       {/* SEARCH */}
       <div className="w-[40%] relative">
