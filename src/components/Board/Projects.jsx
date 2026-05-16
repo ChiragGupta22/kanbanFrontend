@@ -37,11 +37,7 @@ const UserProjects = () => {
     <div className="p-6 text-white">
       <h2 className="text-2xl font-bold mb-6">Welcome {user?.name}</h2>
 
-      {loading ? (
-        <p className="text-gray-400">Loading...</p>
-      ) : projects.length === 0 ? (
-        <p className="text-gray-400">No projects found in this team</p>
-      ) : (
+      {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {projects.map((p) => (
             <div
@@ -54,7 +50,7 @@ const UserProjects = () => {
             </div>
           ))}
         </div>
-      )}
+      }
     </div>
   );
 };
