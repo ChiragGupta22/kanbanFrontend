@@ -20,7 +20,7 @@ const Login = () => {
     try {
       const res = await loginUser(email, password);
       setUser(res.user);
-      if (res.user.role === "USER") navigate("/dash");
+      if (res.user.role === "USER") navigate("/dash/*");
       else navigate("/admin/*");
     } catch (err) {
       setError(err?.response?.data?.message || "Login Failed");

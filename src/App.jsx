@@ -14,7 +14,7 @@ const App = () => {
         <Route path="/Login" element={<Login />} />
 
         <Route
-          path="/dash"
+          path="/dash/*"
           element={
             <ProtectedRoute allowedRoles={["USER"]}>
               <Board />

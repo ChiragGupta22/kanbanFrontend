@@ -152,7 +152,7 @@ const Sidebar = ({ setView, setProjectId, setTeamId }) => {
         </div>
       </aside>
 
-      {/* 🔥 LOGOUT MODAL (OUTSIDE SIDEBAR) */}
+      {/*  LOGOUT MODAL (OUTSIDE SIDEBAR) */}
       {showLogout && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-slate-900 text-white p-5 rounded-lg w-80 text-center">
